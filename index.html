@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your trusted gateway to Meta Quest deals, rewards, and community perks. Share VR experiences and save money with verified referral links.">
+    <title>Meta Quest Referrals | VR Deals & Community Perks</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥽</text></svg>">
+    
+    <style>
+        /* Console-like custom styling */
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #00e5ff;
+            --secondary-color: #00b8d4;
+            --accent-color: #ffd740;
+            --bg-light: #f5f5f5;
+            --bg-dark: #0a0e27;
+            --card-light: #ffffff;
+            --card-dark: #1a1f3a;
+            --text-light: #333333;
+            --text-dark: #e0e0e0;
+            --border-light: #e0e0e0;
+            --border-dark: #2a2f4a;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .console-text {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        
+        .light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+        
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .dark-mode .card {
+            background-color: var(--card-dark);
+            border-color: var(--border-dark);
+        }
+        
+        .light-mode .card {
+            background-color: var(--card-light);
+            border-color: var(--border-light);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 229, 255, 0.3);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 90%;
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, #00e676, #00c853);
+            color: white;
+        }
+        
+        .toast.info {
+            background: linear-gradient(135deg, #00e5ff, #00b8d4);
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        
+        .toast.hiding {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+        }
+        
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #00e676, #00c853);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Mobile-first responsive adjustments */
+        @media (max-width: 768px) {
+            .toast {
+                right: 10px;
+                left: 10px;
+                bottom: 10px;
+            }
+        }
+        
+        /* Console-like terminal effect */
+        .console-line::before {
+            content: '> ';
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        /* Dark mode toggle animation */
+        .toggle-btn {
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Header with Dark Mode Toggle -->
+    <header class="sticky top-0 z-50 backdrop-blur-md" style="background: rgba(10, 14, 39, 0.8);">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">🥽</span>
+                    <h1 class="text-xl md:text-2xl font-bold console-text">
+                        <span class="glow-text" style="color: var(--primary-color);">Meta Quest</span>
+                        <span class="text-white"> Referrals</span>
+                    </h1>
+                </div>
+                <button 
+                    id="darkModeToggle" 
+                    class="toggle-btn p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    aria-label="Toggle dark mode"
+                    data-action="toggle-theme">
+                    <span id="darkModeIcon" class="text-2xl">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 md:py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-12 md:mb-16">
+            <div class="console-text mb-4">
+                <p class="console-line text-sm md:text-base mb-2 opacity-70">SYSTEM ONLINE</p>
+                <p class="console-line text-sm md:text-base opacity-70">LOADING REFERRAL MATRIX...</p>
+            </div>
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 md:mb-6">
+                Your Trusted Gateway to <br class="hidden md:block">
+                <span style="color: var(--primary-color);">VR Deals & Perks</span>
+            </h2>
+            <p class="text-lg md:text-xl mb-6 md:mb-8 max-w-2xl mx-auto opacity-90">
+                Save money, share the experience, and unlock exclusive Meta Quest rewards with verified referral links.
+            </p>
+        </section>
+
+        <!-- Verified Referral Links Section -->
+        <section class="mb-12 md:mb-16">
+            <div class="flex items-center justify-center mb-8">
+                <h3 class="text-2xl md:text-3xl font-bold console-text">
+                    <span style="color: var(--primary-color);">[</span> Verified Referrals <span style="color: var(--primary-color);">]</span>
+                </h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Referral Card 1 -->
+                <div class="card border-2 rounded-lg p-6 shadow-lg" data-referral-card="meta-quest-3">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Meta Quest 3</h4>
+                        <span class="verified-badge">
+                            ✓ Verified
+                        </span>
+                    </div>
+                    <p class="mb-4 opacity-80">Get $30 credit when you purchase a Meta Quest 3 using this referral link.</p>
+                    <div class="space-y-3">
+                        <button 
+                            class="btn-primary w-full py-3 rounded-lg text-white font-semibold"
+                            data-action="copy-link"
+                            data-link="https://www.meta.com/referrals/link/quest3-referral/"
+                            data-device="Quest 3">
+                            Copy Referral Link
+                        </button>
+                        <a 
+                            href="https://www.meta.com/referrals/link/quest3-referral/" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="block w-full py-3 rounded-lg text-center border-2 font-semibold hover:bg-opacity-10 transition-colors"
+                            style="border-color: var(--primary-color); color: var(--primary-color);"
+                            data-action="visit-link"
+                            data-device="Quest 3">
+                            Visit Link →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Referral Card 2 -->
+                <div class="card border-2 rounded-lg p-6 shadow-lg" data-referral-card="meta-quest-2">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Meta Quest 2</h4>
+                        <span class="verified-badge">
+                            ✓ Verified
+                        </span>
+                    </div>
+                    <p class="mb-4 opacity-80">Enjoy $30 store credit when purchasing Meta Quest 2 through this link.</p>
+                    <div class="space-y-3">
+                        <button 
+                            class="btn-primary w-full py-3 rounded-lg text-white font-semibold"
+                            data-action="copy-link"
+                            data-link="https://www.meta.com/referrals/link/quest2-referral/"
+                            data-device="Quest 2">
+                            Copy Referral Link
+                        </button>
+                        <a 
+                            href="https://www.meta.com/referrals/link/quest2-referral/" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="block w-full py-3 rounded-lg text-center border-2 font-semibold hover:bg-opacity-10 transition-colors"
+                            style="border-color: var(--primary-color); color: var(--primary-color);"
+                            data-action="visit-link"
+                            data-device="Quest 2">
+                            Visit Link →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Referral Card 3 -->
+                <div class="card border-2 rounded-lg p-6 shadow-lg" data-referral-card="meta-quest-pro">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Meta Quest Pro</h4>
+                        <span class="verified-badge">
+                            ✓ Verified
+                        </span>
+                    </div>
+                    <p class="mb-4 opacity-80">Premium referral for Meta Quest Pro with exclusive benefits and credits.</p>
+                    <div class="space-y-3">
+                        <button 
+                            class="btn-primary w-full py-3 rounded-lg text-white font-semibold"
+                            data-action="copy-link"
+                            data-link="https://www.meta.com/referrals/link/questpro-referral/"
+                            data-device="Quest Pro">
+                            Copy Referral Link
+                        </button>
+                        <a 
+                            href="https://www.meta.com/referrals/link/questpro-referral/" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="block w-full py-3 rounded-lg text-center border-2 font-semibold hover:bg-opacity-10 transition-colors"
+                            style="border-color: var(--primary-color); color: var(--primary-color);"
+                            data-action="visit-link"
+                            data-device="Quest Pro">
+                            Visit Link →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="mb-12 md:mb-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 console-text">
+                <span style="color: var(--primary-color);">//</span> How It Works
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-4">1️⃣</div>
+                    <h4 class="text-xl font-bold mb-2">Choose Your Device</h4>
+                    <p class="opacity-80">Select the Meta Quest headset you want to purchase from our verified links.</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-4">2️⃣</div>
+                    <h4 class="text-xl font-bold mb-2">Use Referral Link</h4>
+                    <p class="opacity-80">Copy or click the referral link to access exclusive deals and credits.</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-4">3️⃣</div>
+                    <h4 class="text-xl font-bold mb-2">Enjoy Your Rewards</h4>
+                    <p class="opacity-80">Get your store credit and start exploring the amazing world of VR!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Trust Section -->
+        <section class="mb-12 text-center">
+            <div class="card border-2 rounded-lg p-8 md:p-12 shadow-lg max-w-3xl mx-auto">
+                <h3 class="text-2xl md:text-3xl font-bold mb-4">
+                    Built for the VR Community 🎮
+                </h3>
+                <p class="text-lg mb-6 opacity-90">
+                    We're VR enthusiasts who believe in sharing the joy of virtual reality. 
+                    All referral links are verified, regularly updated, and designed to help you 
+                    save money while experiencing the best of Meta Quest.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+                    <div class="flex items-center gap-2">
+                        <span>✓</span>
+                        <span>100% Verified Links</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span>✓</span>
+                        <span>Regularly Updated</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span>✓</span>
+                        <span>Community Driven</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t py-8 mt-12" style="border-color: var(--border-dark);">
+        <div class="container mx-auto px-4 text-center">
+            <p class="console-text text-sm opacity-70 mb-2">
+                <span style="color: var(--primary-color);">$</span> Made with ❤️ for the VR community
+            </p>
+            <p class="text-xs opacity-60">
+                Not affiliated with Meta Platforms, Inc. All trademarks belong to their respective owners.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
